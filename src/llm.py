@@ -21,8 +21,6 @@ def get_commands(message):
         Description: {message}
     """
     
-    model_id = os.getenv('MODEL_ID')
-    
     try:
         response = bedrock.invoke_model(
             modelId=os.getenv('MODEL_ID'),
