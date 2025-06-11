@@ -36,7 +36,12 @@ def main():
                 utils.handle_error(e)
             continue
         else:
-            console.print(f"Processing: {description}", style="blue")
+            console.print(f"Analyzing: {description}", style="blue")
+            commands = utils.get_git_commands()
+            console.print(Panel('\n'.join(f"• {command}" for command in commands), title="Commands", style="blue"))
+            decision = Prompt.ask("Are you sure you want to execute these commands?", choices=["y", "n"])
+            if decision == 'y':
+                utils.execute_command(commands)
             continue
 
 if __name__ == '__main__':

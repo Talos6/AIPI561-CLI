@@ -4,7 +4,7 @@ import boto3
 # Initialize AWS Bedrock client
 bedrock = boto3.client('bedrock-runtime')
 
-def get_git_commands(message):
+def get_commands(message):
     prompt = f"""
         You are a Git expert. Convert the following natural language description into a sequence of Git commands.
         Return ONLY the Git commands, one per line, without any explanation or markdown formatting.
