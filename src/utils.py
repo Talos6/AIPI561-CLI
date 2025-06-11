@@ -4,21 +4,6 @@ from rich.panel import Panel
 
 console = Console()
 
-def get_git_commands():
-    return [
-        "python --version",
-        "git --version",
-        "git status"
-    ]
-
-def get_examples():
-    return [
-        "commit changes",
-        "create and switch to new branch",
-        "show file change status",
-        "view commit history"
-    ]
-
 def execute_command(commands):
     try:
         for command in commands:

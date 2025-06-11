@@ -1,8 +1,18 @@
 import json
 import boto3
+import os
+from dotenv import load_dotenv
 
-# Initialize AWS Bedrock client
-bedrock = boto3.client('bedrock-runtime')
+# Load environment variables
+load_dotenv()
+
+# Initialize AWS Bedrock client with environment variables
+bedrock = boto3.client(
+    'bedrock-runtime',
+    region_name=os.getenv('AWS_REGION'),
+    aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
+    aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY')
+)
 
 def get_commands(message):
     prompt = f"""
@@ -11,19 +21,28 @@ def get_commands(message):
         Description: {message}
     """
     
+    model_id = os.getenv('MODEL_ID')
+    
     try:
         response = bedrock.invoke_model(
-            modelId='anthropic.claude-v2', 
+            modelId=os.getenv('MODEL_ID'),
             body=json.dumps({
-                "prompt": prompt,
-                "max_tokens_to_sample": 500,
+                "anthropic_version": "bedrock-2023-05-31",
+                "max_tokens": 500,
                 "temperature": 0.1,
                 "top_p": 0.9,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
             })
         )
         
         response_body = json.loads(response['body'].read())
-        commands = [cmd.strip() for cmd in response_body['completion'].strip().split('\n')
+        content = response_body['content'][0]['text']
+        commands = [cmd.strip() for cmd in content.strip().split('\n')
                    if cmd.strip() and cmd.strip().startswith('git')]
         
         if not commands:
